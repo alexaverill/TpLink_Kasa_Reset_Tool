@@ -58,7 +58,8 @@ fn main() -> ! {
     let mut led_pin = pins.led.into_push_pull_output();
     led_pin.set_low().unwrap();
     let button_pin = pins.gpio15.into_pull_up_input();
-    let relay_pin = pins.gpio14.into_push_pull_output();
+    let mut relay_pin = pins.gpio2.into_push_pull_output();
+    relay_pin.set_low().unwrap();
 //    loop{}
     loop {
         if button_pin.is_low().unwrap(){
@@ -67,12 +68,16 @@ fn main() -> ! {
             loop{
                 counter += 1;
                 led_pin.set_high().unwrap();
-                delay.delay_ms(500);
+                relay_pin.set_high().unwrap();
+                delay.delay_ms(1000);
+                relay_pin.set_low().unwrap();
                 led_pin.set_low().unwrap();
-                delay.delay_ms(500);
-                if counter >5{
+                delay.delay_ms(1000);
+                if counter >=5{
                     //give LED time to blink
+                    relay_pin.set_high().unwrap();
                     delay.delay_ms(30000);
+                    relay_pin.set_low().unwrap();
                     break;
                 }
             }
